@@ -1,5 +1,6 @@
-const Employee = require("../models/employeemodel")
-const Admin = require("../models/adminmodel")
+const Employee = require("../models/Employee")
+const Admin = require("../models/Admin")
+const Leave = require("../models/Leaves")
 
 const insertemployee = async (request, response) => {
     try 
@@ -14,6 +15,23 @@ const insertemployee = async (request, response) => {
       response.status(500).send(e.message);
     }
   };
+
+//   const insertemployee = async (request, response) => {
+//     try {
+//         const input = request.body;
+        
+//         const existingEmployee = await Employee.findOne({ empid: input.empid });
+//         if (existingEmployee) {
+//             return response.status(400).send('Employee ID already exists');
+//         }
+//         const employee = new Employee(input);
+//         await employee.save();
+//         response.send('Registered Successfully');
+//     } catch (e) {
+//         response.status(500).send(e.message);
+//     }
+// };
+
 
   const viewemployees = async (request, response) => 
  {
@@ -66,8 +84,8 @@ const insertemployee = async (request, response) => {
        const {email,password} = request.body
        //console.log(input)
        const admin = await Admin.findOne({email:email})
-       console.log(Admin)
-       response.json(Admin)
+       console.log(admin)
+       response.json(admin)
      } 
      catch (error) 
      {
@@ -75,4 +93,65 @@ const insertemployee = async (request, response) => {
      }
    };
 
-  module.exports = {insertemployee,checkadminlogin,viewemployees,deleteemployee}
+
+  const adminviewleaves = async (request, response) => 
+{
+  try 
+    {
+      const leaves = await Leave.find();
+      if(leaves.length==0)
+      {
+        response.status(200).send("DATA NOT FOUND");
+      }
+      else
+      {
+        response.json(leaves);
+      }
+    } 
+    catch (error) 
+    {
+      response.status(500).send(error.message);
+    }
+
+};
+  
+
+   const changeleavestatus = async (request, response) =>
+   {
+    try 
+    {
+      const { leaveid, status } = request.body;
+  
+      if (!leaveid || !status) 
+      {
+        return response.status(400).send('Leave ID and status are required');
+      }
+  
+      await Leave.findOneAndUpdate(
+        { leaveid },
+        { $set: { jobStatus : status } },
+        { new: true } // it will return updated document
+      );
+  
+      response.status(200).send('Leave status  Updated Successfully');
+    } catch (error) {
+      response.status(500).send(error.message);
+    }
+   };
+
+   const analysis = async (request, response) =>
+   {
+    try 
+    {
+      const appliedCount = await Leave.countDocuments({ jobStatus: 'APPLIED' });
+
+      response.json({appliedCount});
+    } catch (error) {
+      response.status(500).send(error.message);
+    }
+   };
+
+   
+
+
+  module.exports = {insertemployee,checkadminlogin,viewemployees,deleteemployee,changeleavestatus, adminviewleaves, analysis}

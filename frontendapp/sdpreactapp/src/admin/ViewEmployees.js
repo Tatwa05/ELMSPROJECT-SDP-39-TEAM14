@@ -7,7 +7,7 @@ export default function ViewEmployees() {
 
   const fetchEmployees = async () => {
     try {
-      const response = await axios.get('http://localhost:2014/viewemployees');
+      const response = await axios.get('https://mswdsdp-s14-elms.onrender.com/viewemployees');
       setEmployees(response.data);
     } catch (error) {
       console.error(error.message);
@@ -20,7 +20,7 @@ export default function ViewEmployees() {
 
   const deleteEmployee = async (email) => {
     try {
-      await axios.delete(`http://localhost:2014/deleteemployee/${email}`);
+      await axios.delete(`https://mswdsdp-s14-elms.onrender.com/deleteemployee/${email}`);
       fetchEmployees();
     } catch (error) {
       console.error(error.message);
@@ -103,7 +103,7 @@ export default function ViewEmployees() {
   {Array.isArray(employees) && employees.length > 0 ? (
     employees.map((employee, index) => (
       <tr key={index}>
-        <td>{employee.id}</td>
+        <td>{employee.empid}</td>
         <td>{employee.fullname}</td>
         <td>{employee.gender}</td>
         <td>{employee.dateofbirth}</td>

@@ -1,3 +1,6 @@
+import React,{useState,useEffect} from 'react';
+import axios from "axios"
+
 const styles = {
     container: {
       marginTop: '80px',
@@ -27,6 +30,17 @@ const styles = {
       boxSizing: 'border-box',
       fontSize: '18px', // Increased font size for inputs
     },
+    selects: { // Changed from "select :" to "select:"
+      flex: '1',
+      width: '100%',
+      padding: '15px', // Applied padding for select
+      borderRadius: '15px',
+      boxSizing: 'border-box',
+      fontSize: '18px', // Increased font size for select
+    },
+    optionnames: { // Added styles for options
+      fontSize: '18px', // Increased font size for options
+    },
     button: {
       backgroundColor: '#008000',
       color: 'white',
@@ -45,57 +59,113 @@ const styles = {
   };
   
   export default function ApplyLeave() {
+    const [employeeData, setEmployeeData] = useState("");
+
+  useEffect(() => {
+    const storedEmployeeData = localStorage.getItem('employee');
+    if (storedEmployeeData) {
+      const parsedEmployeeData = JSON.parse(storedEmployeeData);
+      setEmployeeData(parsedEmployeeData)
+    }
+  }, []);
+
+    const [formData, setFormData] = useState({
+      leavetype: '',
+      fromdate: '',
+      todate: '',
+      Reason: '',
+      
+    });
+  
+    //message state variable
+    const [message, setMessage] = useState('');
+    //error state variable
+    const [error, setError] = useState('');
+  
+    
+  
+    const handleSubmit = async (e) => 
+    {
+      e.preventDefault();
+      try 
+      {
+        const response = await axios.post('https://mswdsdp-s14-elms.onrender.com/applyleave', {...formData, employee : employeeData});
+        if (response.status === 200) 
+        {
+          setFormData({
+            leavetype: '',
+            fromdate: '',
+            todate: '',
+            Reason: '',
+          });
+        }
+        setMessage(response.data);
+        setError('');
+      } 
+      catch(error) 
+      {
+        setError(error.response.data);
+        setMessage('');
+      }
+    };
+
     return (
+      <form onSubmit={handleSubmit}>
       <div style={styles.container}>
         <table style={styles.table}>
           <tbody>
             <tr style={styles.formGroup}>
               <td style={styles.label}>Select Leave type:</td>
               <td>
-                <input
-                  type="text"
+                <select
+                  style={styles.selects}
                   id="leavetype"
-                  style={styles.input}
+                  value={formData.leavetype}
+                  onChange={(e) => setFormData({ ...formData, leavetype: e.target.value })}
                   required
-                  placeholder="Leave type"
-                />
+                >
+                  <option value="">---Select---</option>
+                  <option value="casualLeave">casual Leave</option>
+                  <option value="MedicalLeave">Medical Leave</option>
+                  <option value="OndutyLeave">On duty Leave</option>
+                  <option value="MaternityLeave">Maternity Leave</option>
+                </select>
               </td>
             </tr>
-            <br></br>
-  
+
             <tr style={styles.formGroup}>
               <td style={styles.label}>From Date:</td>
               <td>
                 <input
                   type="date"
-                  id="date"
+                  value={formData.fromdate}
+                  onChange={(e) => setFormData({ ...formData, fromdate: e.target.value })}
                   style={styles.input}
                   required
                 />
               </td>
             </tr>
-            <br></br>
-  
+
             <tr style={styles.formGroup}>
               <td style={styles.label}>To Date:</td>
               <td>
                 <input
                   type="date"
-                  id="date"
+                  value={formData.todate}
+                  onChange={(e) => setFormData({ ...formData, todate: e.target.value })}
                   style={styles.input}
                   required
                 />
               </td>
             </tr>
-            <br></br>
-  
-  
+
             <tr style={styles.formGroup}>
               <td style={styles.label}>Reason:</td>
               <td>
                 <input
                   type="text"
-                  id="reason"
+                  value={formData.Reason}
+                  onChange={(e) => setFormData({ ...formData, Reason: e.target.value })}
                   style={styles.input}
                   required
                   placeholder="Reason"
@@ -104,14 +174,11 @@ const styles = {
             </tr>
           </tbody>
         </table>
-  <br></br>
-  {/* <br></br> */}
-  <br></br>
-  
         <button type="submit" style={styles.button} className="button">
           Apply Leave
         </button>
       </div>
+    </form>
     );
   }
   

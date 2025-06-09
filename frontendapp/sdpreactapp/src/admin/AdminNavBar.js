@@ -1,27 +1,38 @@
 // Navbar.js
 
 import React from 'react';
-import { Routes, Route, Link } from 'react-router-dom';
-import './styles.css'
+import { Routes, Route, Link, useNavigate } from 'react-router-dom';
+import "./admin.css"
 import Dashboard from './Dashboard';
 import AddEmployee from './AddEmployee';
 import ViewEmployees from './ViewEmployees';
 import Leaves from './Leaves';
-import Login from './../main/Login';
+import Login from '../admin/AdminLogin';
 
 
 
 
 export default function AdminNavBar() {
+  const navigate = useNavigate();
+
+
+  const handleLogout = () => {
+    localStorage.removeItem('isAdminLoggedIn');
+    localStorage.removeItem('admin');
+    navigate('/adminlogin');
+    window.location.reload()
+  };
+
   return (
     <div>
+      
         <ul className='navbar'>
         <li className='logo'><Link to="/home" className='logo-link'>LeavePilot</Link></li>      
         <li><Link to="/">Dashboard</Link></li>
         <li><Link to="/AddEmployee">Add Employee</Link></li>
         <li><Link to="/ViewEmployees">View Employees</Link></li>
         <li><Link to="/Leaves">Leaves</Link></li>
-        <li> <Link to ="/login">Logout</Link>&nbsp;&nbsp;&nbsp;</li>
+        <li> <Link onClick={handleLogout} >Logout</Link>&nbsp;&nbsp;&nbsp;</li>
         </ul>
 
         <Routes>

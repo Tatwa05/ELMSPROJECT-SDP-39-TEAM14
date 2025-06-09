@@ -1,4 +1,4 @@
-import React from 'react';
+import React,{useState, useEffect}  from 'react';
 
 const commonGridItemStyles = {
   marginTop:'90px',
@@ -37,12 +37,33 @@ const gridContainerStyles = {
 };
 
 export default function EmpDashboard() {
+
+  const [employeeData, setEmployeeData] = useState("");
+
+  useEffect(() => {
+    const storedEmployeeData = localStorage.getItem('employee');
+    if (storedEmployeeData) {
+      const parsedEmployeeData = JSON.parse(storedEmployeeData);
+      setEmployeeData(parsedEmployeeData)
+    }
+  }, []);
+
   return (
+
+    <div>
+    
+      {employeeData && (
+        <div>
+          <p style={{ textAlign: 'center', fontSize: '20px', fontWeight: 'bold', color: 'blue' }}>Welcome {employeeData.fullname}</p>
+        </div>
+      )}
+    
+
     <div style={{ ...gridContainerStyles, marginTop: '70px' }}>
       <div className='pendingapprovals' style={{ ...gridItemStyles.casual }}>
         <p>
           <span style={{ fontSize: '44px', color: 'black' }}>
-            <b>10</b>
+            <b>{employeeData.casualleaves}</b>
             <br />
           </span>
           <span style={{ fontSize: '28px' }}>
@@ -54,7 +75,7 @@ export default function EmpDashboard() {
       <div className='medical' style={{ ...gridItemStyles.sick }}>
         <p>
           <span style={{ fontSize: '44px', color: 'black' }}>
-            <b>5</b>
+            <b>{employeeData.medicalleaves}</b>
             <br />
           </span>
           <span style={{ fontSize: '28px' }}>
@@ -66,7 +87,7 @@ export default function EmpDashboard() {
       <div className='onduty' style={{ ...gridItemStyles.paid }}>
         <p>
           <span style={{ fontSize: '44px', color: 'black' }}>
-            <b>7</b>
+            <b>{employeeData.ondutyleaves}</b>
             <br />
           </span>
           <span style={{ fontSize: '28px' }}>
@@ -78,7 +99,7 @@ export default function EmpDashboard() {
       <div className='maternity' style={{ ...gridItemStyles.unpaid }}>
         <p>
           <span style={{ fontSize: '44px', color: 'black' }}>
-            <b>3</b>
+            <b>{employeeData.maternityleaves}</b>
             <br />
           </span>
           <span style={{ fontSize: '28px' }}>
@@ -86,6 +107,7 @@ export default function EmpDashboard() {
           </span>
         </p>
       </div>
+    </div>
     </div>
   );
 }

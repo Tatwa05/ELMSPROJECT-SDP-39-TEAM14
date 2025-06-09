@@ -4,18 +4,14 @@ import axios from 'axios'
 
 export default function AddEmployee() {
   const [formData, setFormData] = useState({
-    id:'',
+    empid:'',
     fullname: '',
     gender: '',
     dateofbirth: '',
     email: '',
-    password: '',
     location: '',
     contact: '',
-    casualleaves:'',
-    medicalleaves:'',
-    ondutyleaves:'',
-    maternityleaves:'',
+    
   });
 
    //message state variable
@@ -28,10 +24,7 @@ export default function AddEmployee() {
      
      setFormData({...formData, [e.target.id]: e.target.value});
      
-     // It updates the state formData by adding or updating a property with a key equal to 
-     //the ID of the input field 
-     //that triggered the change event (e.target.id). The value of this property is 
-     //set to the new value entered in that input field (e.target.value).
+     
    };
  
    const handleSubmit = async (e) => 
@@ -39,22 +32,19 @@ export default function AddEmployee() {
      e.preventDefault();
      try 
      {
-       const response = await axios.post('http://localhost:2014/insertemployee', formData);
+       const response = await axios.post('https://mswdsdp-s14-elms.onrender.com/insertemployee',formData);
        if (response.status === 200) 
        {
-         //It will set all fields to ""
+         
          setFormData({
+            empid: '',
            fullname: '',
            gender: '',
            dateofbirth: '',
            email: '',
-           password: '',
            location: '',
            contact: '',
-          casualleaves:'',
-          medicalleaves:'',
-          ondutyleaves:'',
-          maternityleaves:'',
+          
          });
        }
        setMessage(response.data);
@@ -75,11 +65,13 @@ export default function AddEmployee() {
   }
 
   <form onSubmit={handleSubmit}>
+
     <table align="center">
       <tbody>
         <tr>
           <td><label>ID</label></td>
-          <td><input type="text" id="id" value={formData.id} onChange={handleChange} required /></td>
+          <td><input type="text" id="empid" value={formData.empid} onChange={handleChange} required />
+          </td>
         </tr>
         <tr>
           <td><label>Full Name</label></td>
@@ -104,10 +96,7 @@ export default function AddEmployee() {
           <td><label>Email</label></td>
           <td><input type="email" id="email" value={formData.email} onChange={handleChange} required /></td>
         </tr>
-        <tr>
-          <td><label>Password</label></td>
-          <td><input type="password" id="password" value={formData.password} onChange={handleChange} required /></td>
-        </tr>
+        
         <tr>
           <td><label>Location</label></td>
           <td><input type="text" id="location" value={formData.location} onChange={handleChange} required /></td>
@@ -116,22 +105,7 @@ export default function AddEmployee() {
           <td><label>Contact</label></td>
           <td><input type="number" id="contact" value={formData.contact} onChange={handleChange} pattern="[6789][0-9]{9}" placeholder="Must be 10 digits" required /></td>
         </tr>
-        <tr>
-          <td><label>Casual Leaves</label></td>
-          <td><input type="text" id="casualleaves" value={formData.casualleaves} onChange={handleChange} required /></td>
-        </tr>
-        <tr>
-          <td><label>Medical Leaves</label></td>
-          <td><input type="text" id="medicalleaves" value={formData.medicalleaves} onChange={handleChange} required /></td>
-        </tr>
-        <tr>
-          <td><label>On Duty Leaves</label></td>
-          <td><input type="text" id="ondutyleaves" value={formData.ondutyleaves} onChange={handleChange} required /></td>
-        </tr>
-        <tr>
-          <td><label>Maternity Leaves</label></td>
-          <td><input type="text" id="maternityleaves" value={formData.maternityleaves} onChange={handleChange} required /></td>
-        </tr>
+        
         <tr>
           <td colSpan="2" align="center"><button type="submit">Register</button></td>
         </tr>
